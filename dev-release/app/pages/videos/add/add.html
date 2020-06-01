@@ -1,0 +1,23 @@
+<form>
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="Title" ng-model="video.title" required>
+    </div>
+    <div class="form-group">
+        <ui-select ng-model="categories.selected"
+                   class="btn-group bootstrap-select form-control"
+                   ng-disabled="false"
+                   append-to-body="true"
+                   search-enabled="false">
+            <ui-select-match placeholder="Choisissez une catégorie">
+                <span> {{$select.selected.text}}</span>
+            </ui-select-match>
+            <ui-select-choices repeat="c in categories">
+                <span ng-bind-html="c.text"></span>
+            </ui-select-choices>
+        </ui-select>
+    </div>
+    <div class="form-group">
+        <textarea class="form-control" placeholder="Description" ng-model="video.description" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-success" ng-click="addVideo(video, categories.selected)">Send</button>
+</form>

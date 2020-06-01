@@ -7,8 +7,10 @@
 
   angular.module('BlurAdmin.pages', [
     'ui.router',
+    'ui.select',
 
     'BlurAdmin.pages.dashboard',
+    /*
     'BlurAdmin.pages.ui',
     'BlurAdmin.pages.components',
     'BlurAdmin.pages.form',
@@ -16,6 +18,8 @@
     'BlurAdmin.pages.charts',
     'BlurAdmin.pages.maps',
     'BlurAdmin.pages.profile',
+    */
+    'BlurAdmin.pages.videos',
   ])
       .config(routeConfig);
 
@@ -23,6 +27,7 @@
   function routeConfig($urlRouterProvider, baSidebarServiceProvider) {
     $urlRouterProvider.otherwise('/dashboard');
 
+    /*
     baSidebarServiceProvider.addStaticItem({
       title: 'Pages',
       icon: 'ion-document',
@@ -57,6 +62,7 @@
         }]
       }]
     });
+    */
   }
 
 })();

@@ -1,0 +1,62 @@
+<div class="row-fluid">
+    <div ng-repeat="video in videos" class="col-xlg-3 col-lg-6  col-md-6 col-sm-6 col-xs-12">
+        <div ba-panel ba-panel-class="with-scroll heading-widget">
+            <div class="section-block" style="min-height: 500px">
+                <div style="margin-bottom: 13px">
+                    <h1
+                            editable-text="video.title"
+                            e-name="title"
+                            e-form="rowform"
+                            e-required>
+                        {{video.title}}
+                    </h1>
+                </div>
+                <div style="margin-bottom: 13px">
+                    <h2
+                            class="m-3"
+                            editable-select="video.category"
+                            e-name="categories"
+                            e-form="rowform"
+                            e-selectpicker
+                            e-ng-options="c.id as c.text for c in categories"
+                            e-required>
+                        {{showCategory(video)}}
+                    </h2>
+                </div>
+                <div style="margin-bottom: 13px">
+                    <p editable-textarea="video.description"
+                       e-name="description"
+                       e-form="rowform"
+                       e-rows="20"
+                       e-cols="80"
+                       e-required>
+                        {{video.description}}
+                    </p>
+                </div>
+                <div class="m-2">
+                    <img ng-src="{{::( video.image | appImage )}}" class="center-block" width="200" height="200">
+                </div>
+            </div>
+            <form editable-form name="rowform" ng-show="rowform.$visible" class="form-buttons form-inline">
+                <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary editable-table-button btn-xs">
+                    Enregistrer
+                </button>
+                <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default editable-table-button btn-xs">
+                    Annuler
+                </button>
+            </form>
+            <div class="buttons" ng-show="!rowform.$visible">
+                <button
+                        class="btn btn-primary editable-table-button btn-xs"
+                        ng-click="rowform.$show()">
+                    Edit
+                </button>
+                <button class="btn btn-danger editable-table-button btn-xs" ng-click="removeVideo($index)">Delete</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
