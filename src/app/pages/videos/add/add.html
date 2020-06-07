@@ -9,10 +9,10 @@
                    append-to-body="true"
                    search-enabled="false">
             <ui-select-match placeholder="Choisissez une catégorie">
-                <span> {{$select.selected.text}}</span>
+                <span> {{$select.selected.label}}</span>
             </ui-select-match>
             <ui-select-choices repeat="c in categories">
-                <span ng-bind-html="c.text"></span>
+                <span ng-bind-html="c.label"></span>
             </ui-select-choices>
         </ui-select>
     </div>

@@ -5,8 +5,8 @@
         .controller('VideosPageCtrl', VideosPageCtrl);
 
     /** @ngInject */
-    function VideosPageCtrl($scope, $filter, editableOptions, editableThemes, $location) {
-
+    function VideosPageCtrl($scope, $filter, editableOptions, editableThemes, $location, $http) {
+        /*
         $scope.videos = [
             {
                 id: 1,
@@ -72,48 +72,114 @@
                 image: 'app/profile/Nasta.png',
             },
         ];
+        */
 
+        /*
         $scope.categories = [
             {id: 1, text: 'Science-Fiction'},
             {id: 2, text: 'Aventure'},
             {id: 3, text: 'Romance'},
             {id: 4, text: 'Histoire vraie'}
         ];
+        */
+
+        const loadVideosInformation = () => {
+            $http({
+                url: 'http://localhost:8000/api/videos/get-videos',
+                method: 'POST'
+            })
+                .then(res => {
+                    $scope.videos = res.data;
+                    $scope.videos.forEach( video => video.image = 'app/videos/' + video.image );
+
+                    $http({
+                        url: 'http://localhost:8000/api/videos/get-video-categories',
+                        method: 'POST'
+                    })
+                        .then(res => {
+                            $scope.categories = res.data;
+                            return true;
+                        })
+                        .catch(err => {
+                            console.log(err);
+                            return false;
+                        });
+                })
+                .catch(err => {
+                    console.log(err);
+                    return false;
+                });
+        };
+
+        loadVideosInformation();
 
         $scope.showCategory = function(video) {
             let selected = [];
-            if(video.category) {
-                selected = $filter('filter')($scope.categories, {id: video.category});
+            if(video.category && $scope.categories) {
+                selected = $filter('filter')($scope.categories, {_id: video.category});
             }
-            return selected.length ? selected[0].text : 'Not set';
+            return selected.length ? selected[0].label : 'Not set';
         };
 
         $scope.addVideo = function(video, category) {
-            if( !video || !video.title || !category.id || !video.description ) {
+            if( !video || !video.title || !category._id || !video.description ) {
                 console.log('error: empty fields');
                 return;
             }
 
             $scope.inserted = {
-                id: $scope.videos.length+1,
+                // id: $scope.videos.length+1,
                 title: video.title,
-                category: category.id,
+                category: category._id,
                 description: video.description,
-                image: 'app/profile/Nasta.png',
+                image: 'no-image.png',
             };
-            $scope.videos.push($scope.inserted);
-            $location.url('/videos/show');
-            alert('Video ajoutée avec succès!')
+
+            // $scope.videos.push($scope.inserted);
+            $http({
+                url: 'http://localhost:8000/api/videos/add-video',
+                method: 'POST',
+                data: $scope.inserted
+            })
+                .then( () => {
+                    $location.url('/videos/show');
+                    loadVideosInformation();
+                    alert(`La vidéo ${$scope.inserted.title} a été ajoutée avec succès!`);
+                })
+                .catch(err => console.log(err));
         };
 
-        $scope.removeVideo = function(index) {
-            $scope.videos.splice(index, 1);
+        $scope.changeVideo = function(video) {
+            $http({
+                url: 'http://localhost:8000/api/videos/edit-video',
+                method: 'POST',
+                data: video
+            })
+                .then( () => {
+                    $location.url('/videos/show');
+                    loadVideosInformation();
+                    alert(`La vidéo ${video.title} a été modifiée avec succès!`);
+                })
+                .catch(err => console.log(err));
+        };
+
+        $scope.removeVideo = function(video) {
+            // $scope.videos.splice(index, 1);
+            $http({
+                url: 'http://localhost:8000/api/videos/remove-video',
+                method: 'POST',
+                data: { id: video._id }
+            })
+                .then( () => {
+                    $location.url('/videos/show');
+                    loadVideosInformation();
+                    alert(`La vidéo ${video.title} a été ajoutée avec succès!`);
+                })
+                .catch(err => console.log(err));
         };
 
         editableOptions.theme = 'bs3';
         editableThemes['bs3'].submitTpl = '<button type="submit" class="btn btn-primary btn-with-icon"><i class="ion-checkmark-round"></i></button>';
         editableThemes['bs3'].cancelTpl = '<button type="button" ng-click="$form.$cancel()" class="btn btn-default btn-with-icon"><i class="ion-close-round"></i></button>';
-
     }
-
 })();

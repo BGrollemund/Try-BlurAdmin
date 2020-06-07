@@ -18,12 +18,15 @@
                             e-name="categories"
                             e-form="rowform"
                             e-selectpicker
-                            e-ng-options="c.id as c.text for c in categories"
+                            e-ng-options="c._id as c.label for c in categories"
                             e-required>
                         {{showCategory(video)}}
                     </h2>
                 </div>
-                <div style="margin-bottom: 13px">
+                <div class="m-2">
+                    <img ng-src="{{::( video.image | appImage )}}" class="center-block" height="200">
+                </div>
+                <div style="margin-top: 13px">
                     <p editable-textarea="video.description"
                        e-name="description"
                        e-form="rowform"
@@ -33,11 +36,13 @@
                         {{video.description}}
                     </p>
                 </div>
-                <div class="m-2">
-                    <img ng-src="{{::( video.image | appImage )}}" class="center-block" width="200" height="200">
-                </div>
             </div>
-            <form editable-form name="rowform" ng-show="rowform.$visible" class="form-buttons form-inline">
+            <form
+                    editable-form
+                    name="rowform"
+                    ng-show="rowform.$visible"
+                    onaftersave="changeVideo(video)"
+                    class="form-buttons form-inline">
                 <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary editable-table-button btn-xs">
                     Enregistrer
                 </button>
@@ -51,7 +56,7 @@
                         ng-click="rowform.$show()">
                     Edit
                 </button>
-                <button class="btn btn-danger editable-table-button btn-xs" ng-click="removeVideo($index)">Delete</button>
+                <button class="btn btn-danger editable-table-button btn-xs" ng-click="removeVideo(video)">Delete</button>
             </div>
         </div>
 
